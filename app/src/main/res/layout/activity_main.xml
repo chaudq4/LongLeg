@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background_original"
+        android:foreground="@drawable/shape_dim"
         android:orientation="vertical">
 
 
@@ -172,7 +173,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/btnSave"
+                        android:id="@+id/btnMenu"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -184,7 +185,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_baseline_save_24" />
+                            android:src="@drawable/ic_baseline_more_vert_24" />
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>

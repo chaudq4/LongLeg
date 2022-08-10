@@ -1,0 +1,88 @@
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/more_menu_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/btnSaveOriginal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/more_menu_height"
+            android:background="@drawable/ripple_button"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_save_alt_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/save_original"
+                android:textSize="@dimen/text_size_more_menu" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/devider_height"
+            android:layout_margin="@dimen/devider_margin"
+            android:background="@color/primary" />
+
+        <LinearLayout
+            android:id="@+id/btnResize"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/more_menu_height"
+            android:background="@drawable/ripple_button"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_photo_size_select_large_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/resize"
+                android:textSize="@dimen/text_size_more_menu" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/devider_height"
+            android:layout_margin="@dimen/devider_margin"
+            android:background="@color/primary" />
+
+        <LinearLayout
+            android:id="@+id/btnExit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/more_menu_height"
+            android:background="@drawable/ripple_button"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_exit_to_app_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/exit"
+                android:textSize="@dimen/text_size_more_menu" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -7,14 +7,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -25,6 +27,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 
 import com.chauduong.longleg.databinding.ActivityMainBinding;
+import com.chauduong.longleg.databinding.MenuMoreBinding;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int SCALE = 5;
     private static final int SELECT_GALLERY_IMAGE = 1;
     private static final String TAG = "chauanh";
-    private FrameLayout btnSave, btnReset, btnOpen, btnFlip;
+    private FrameLayout btnMore, btnReset, btnOpen, btnFlip;
     private ImageData mImageData;
     private ActivityMainBinding mActivityMainBinding;
     private SeekBar sbValue;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int heightBitmap, yLineOne, yLineTwo;
     private DialogManager mDialogManager;
     private int valueTemp;
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,12 +58,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initListener();
         initData();
+        Log.i(TAG, "onCreate: ");
+    }
 
+    void showPopupMenu() {
+        popupWindow = new PopupWindow();
+        MenuMoreBinding menuMoreBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.menu_more, null, false);
+        popupWindow.setContentView(menuMoreBinding.getRoot());
+        popupWindow.setWidth(Utils.getWindowWidth(this) / 3);
+        popupWindow.setHeight(getResources().getDimensionPixelSize(R.dimen.more_menu_height) * 3 + getResources().getDimensionPixelSize(R.dimen.devider_height) * 2 + getResources().getDimensionPixelSize(R.dimen.devider_margin) * 6);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setAnimationStyle(R.style.Animation);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.showAtLocation(btnMore, Gravity.END | Gravity.BOTTOM, btnMore.getWidth() / 2, btnMore.getHeight());
+        mActivityMainBinding.getRoot().getForeground().setAlpha(150);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mActivityMainBinding.getRoot().getForeground().setAlpha(0);
+            }
+        });
+        menuMoreBinding.btnExit.setOnClickListener(this);
+        menuMoreBinding.btnResize.setOnClickListener(this);
+        menuMoreBinding.btnSaveOriginal.setOnClickListener(this);
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        Log.i(TAG, "onConfigurationChanged: ");
+        updateMenu();
+
+    }
+
+    private void updateMenu() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+            btnMore.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showPopupMenu();
+                }
+            }, 100);
+
+        }
 
     }
 
@@ -67,12 +109,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mImageData = new ImageData(this);
         mActivityMainBinding.setMImageData(mImageData);
         mDialogManager = new DialogManager(this, this);
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
         btnOpen.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+        btnMore.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         sbValue.setOnSeekBarChangeListener(this);
         lineOne.setOnTouchListener(this);
@@ -140,12 +183,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         btnOpen = mActivityMainBinding.btnOpen;
         btnReset = mActivityMainBinding.btnReset;
-        btnSave = mActivityMainBinding.btnSave;
+        btnMore = mActivityMainBinding.btnMenu;
         sbValue = mActivityMainBinding.sbValue;
         lineOne = mActivityMainBinding.lineOne;
         lineTwo = mActivityMainBinding.lineTwo;
         btnFlip = mActivityMainBinding.btnFlip;
         mActivityMainBinding.cardView.setBackgroundResource(R.drawable.cardview_bg);
+        mActivityMainBinding.getRoot().getForeground().setAlpha(0);
 
     }
 
@@ -158,8 +202,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnReset:
                 reset();
                 break;
-            case R.id.btnSave:
+            case R.id.btnMenu:
+                showPopupMenu();
+                break;
+            case R.id.btnSaveOriginal:
                 mImageData.save(longLeg(mImageData.getBmpFullOriginal(), sbValue.getProgress()));
+                if (popupWindow != null && popupWindow.isShowing())
+                    popupWindow.dismiss();
+                break;
+            case R.id.btnExit:
+                finish();
+                break;
+            case R.id.btnResize:
                 break;
             default:
                 break;

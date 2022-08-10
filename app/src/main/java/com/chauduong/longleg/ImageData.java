@@ -72,13 +72,13 @@ public class ImageData extends BaseObservable implements DialogManager.DialogLis
             public void run() {
                 String root = Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES).toString();
-                File myDir = new File(root + "/saved_images");
+                File myDir = new File(root + "/" + mContext.getString(R.string.app_name));
                 myDir.mkdirs();
                 Random generator = new Random();
 
                 int n = 10000;
                 n = generator.nextInt(n);
-                String fname = "Image-" + n + ".jpg";
+                String fname = "GOM_" + n + ".jpg";
                 File file = new File(myDir, fname);
                 if (file.exists()) file.delete();
                 try {

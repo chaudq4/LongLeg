@@ -11,4 +11,5 @@
     <color name="primary">#FB8C00</color>
     <color name="colorPrimaryVariant">#F4511E</color>
     <color name="background_original">#FFF3E0</color>
+    <color name="background_more_menu">#FFE082</color>
 </resources>

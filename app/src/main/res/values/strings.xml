@@ -6,4 +6,7 @@
     <string name="warning">Warning</string>
     <string name="cancel">Cancel</string>
     <string name="OK">OK</string>
+    <string name="save_original">Save original</string>
+    <string name="resize">Resize</string>
+    <string name="exit">Exit</string>
 </resources>
