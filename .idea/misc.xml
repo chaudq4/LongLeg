@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/border_shadow.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/cardview_bg.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/concer_layout.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/custom_thumb.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_add_to_photos_24.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_arrow_circle_right_24.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_cancel_presentation_24.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_dehaze_24.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_flip_24.xml" value="0.182" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_save_24.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_unfold_more_24.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_baseline_warning_24.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ic_launcher_background.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ripple_button.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ripple_button_cancel_dialog.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/ripple_button_dialog.xml" value="0.167" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/seekbar_progress.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/drawable/seekbar_style.xml" value="0.187" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/layout/dialog_warning_lockstate.xml" value="0.33" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.168" />
+        <entry key="..\:/Android Project/LongLeg/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.168" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

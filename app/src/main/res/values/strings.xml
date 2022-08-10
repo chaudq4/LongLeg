@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LongLeg</string>
+    <string name="successful">Successful</string>
+    <string name="lock_state">Please reset seek bar to change position</string>
+    <string name="permisstion">Please accept permission</string>
+    <string name="warning">Warning</string>
+    <string name="cancel">Cancel</string>
+    <string name="OK">OK</string>
+</resources>
