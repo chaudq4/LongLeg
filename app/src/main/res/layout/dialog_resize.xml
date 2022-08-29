@@ -1,0 +1,146 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="mImageData"
+            type="com.chauduong.longleg.ImageData" />
+
+        <import type="com.chauduong.longleg.PreviewBindingAdapter" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/concer_layout"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_img_original">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/resize"
+            android:textColor="@color/primary"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/auto_resize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:buttonTint="@color/primary"
+                android:checked="true"
+                android:text="@string/auto" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_width_height_resize"
+                android:layout_weight="1"
+                android:text="@string/width" />
+
+            <EditText
+                android:id="@+id/edtWidth"
+                setEditTextSize="@{mImageData.widthRecommend}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_width_height_resize"
+                android:layout_weight="2"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_width_height_resize"
+                android:layout_weight="1"
+                android:text="@string/height" />
+
+            <EditText
+                android:id="@+id/edtHeight"
+                setEditTextSize="@{mImageData.heightRecommend}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_width_height_resize"
+                android:layout_weight="2"
+                android:inputType="number" />
+
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_img_original"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/cbJPG"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/primary"
+                android:checked="true"
+                android:text="@string/jpg" />
+
+            <RadioButton
+                android:id="@+id/cbPNG"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/primary"
+                android:text="@string/PNG" />
+        </RadioGroup>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_img_original"
+            android:gravity="center_horizontal">
+
+            <FrameLayout
+                android:id="@+id/btnOk"
+                android:layout_width="120dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="@dimen/margin_img_original"
+                android:background="@drawable/ripple_button_dialog"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/OK"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btnCancel"
+                android:layout_width="120dp"
+                android:layout_height="42dp"
+                android:layout_toRightOf="@id/btnOk"
+                android:background="@drawable/ripple_button_cancel_dialog"
+                android:clickable="true">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textSize="20sp" />
+            </FrameLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

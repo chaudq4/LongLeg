@@ -1,6 +1,9 @@
 package com.chauduong.longleg;
 
 
+import static com.chauduong.longleg.DialogManager.RESIZE_JPG;
+import static com.chauduong.longleg.DialogManager.RESIZE_PNG;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,8 +40,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnTouchListener, DialogManager.DialogListener {
-    public static final int SCALE = 5;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, View.OnTouchListener, DialogManager.DialogListener, ImageData.ImageDataListener {
+    public static final int MAX_WIDTH_HEIGHT = 500;
     private static final int SELECT_GALLERY_IMAGE = 1;
     private static final String TAG = "chauanh";
     private FrameLayout btnMore, btnReset, btnOpen, btnFlip;
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         mActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        Utils.setFullScreen(this);
         initView();
         initListener();
         initData();
@@ -106,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
-        mImageData = new ImageData(this);
+        mImageData = new ImageData(this, this);
         mActivityMainBinding.setMImageData(mImageData);
-        mDialogManager = new DialogManager(this, this);
+        mDialogManager = new DialogManager(this, mImageData, this);
 
     }
 
@@ -151,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sbValue.setProgress(0);
                 sbValue.setOnSeekBarChangeListener(this);
                 mImageData.setFilePath(data.getData());
-                Bitmap decodeBitmapOriginal = Utils.getBitmapFromGallery(this, data.getData(), SCALE);
+                Bitmap decodeBitmapOriginal = Utils.getBitmapFromGallery(this, data.getData(), MAX_WIDTH_HEIGHT, mImageData);
+                Log.i(TAG, "onActivityResult: " + decodeBitmapOriginal.getWidth() + " " + decodeBitmapOriginal.getHeight());
                 Bitmap bmpFullOriginal = Utils.getBitmapFromGallery(this, data.getData());
                 mImageData.setBmpOriginal(decodeBitmapOriginal);
                 mImageData.setBmpFullOriginal(bmpFullOriginal);
@@ -167,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ViewGroup.LayoutParams lp = mActivityMainBinding.viewOne.getLayoutParams();
                 lp.height = getResources().getDimensionPixelSize(R.dimen.line_height);
                 lp.width = mActivityMainBinding.imgOriginal.getDrawable().getIntrinsicWidth();
-                ;
                 mActivityMainBinding.viewOne.setLayoutParams(lp);
                 mActivityMainBinding.lineOne.setGravity(Gravity.CENTER_HORIZONTAL);
                 lp = mActivityMainBinding.viewTwo.getLayoutParams();
@@ -206,7 +211,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showPopupMenu();
                 break;
             case R.id.btnSaveOriginal:
-                mImageData.save(longLeg(mImageData.getBmpFullOriginal(), sbValue.getProgress()));
+                new Thread(() -> {
+                    Bitmap finalBitmap = longLeg(mImageData.getBmpFullOriginal(), sbValue.getProgress());
+                    new Handler(getMainLooper()).post(() -> {
+                        mImageData.save(finalBitmap, RESIZE_JPG);
+                    });
+                }).start();
+
                 if (popupWindow != null && popupWindow.isShowing())
                     popupWindow.dismiss();
                 break;
@@ -214,11 +225,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.btnResize:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bitmap bitmapTemp = longLeg(mImageData.getBmpFullOriginal(), sbValue.getProgress());
+                        mImageData.setBitmapPreviewTempFullSize(bitmapTemp);
+                    }
+                }).start();
+                mDialogManager.show(DialogManager.RESIZE);
+                if (popupWindow != null && popupWindow.isShowing())
+                    popupWindow.dismiss();
                 break;
             default:
                 break;
         }
     }
+
 
     private void reset() {
         sbValue.setProgress(0);
@@ -362,8 +384,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reset();
     }
 
-    @Override
-    public void onCancelResetDialogClick() {
 
+    @Override
+    public void onOKResize(int type, int width, int height) {
+        mImageData.resizeBitmapAndSave(type, width, height);
     }
+
+
+    @Override
+    public void onAutoCheckClick(boolean isChecked) {
+        if (isChecked) {
+            mImageData.updateWidthHeightRecommend();
+        }
+    }
+
+
+    @Override
+    public void onShowDialog(int TYPE) {
+        mDialogManager.show(TYPE);
+    }
+
 }

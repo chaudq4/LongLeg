@@ -17,6 +17,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class Utils {
+    private static final String TAG = "Utils";
+
     public static void setFullScreen(Context mContext) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ((Activity) mContext).getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -40,7 +42,6 @@ public class Utils {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(picturePath, options);
 
-        Log.i("chauanh", "getBitmapFromGallery: " + options.outWidth + " " + options.outHeight);
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, options.outWidth, options.outHeight);
 
@@ -50,7 +51,7 @@ public class Utils {
 
     }
 
-    public static Bitmap getBitmapFromGallery(Context mContext, Uri path, int SCALE) {
+    public static Bitmap getBitmapFromGallery(Context mContext, Uri path, int MAX_WIDTH_HEIGHT, ImageData mImageData) {
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         Cursor cursor = mContext.getContentResolver().query(path, filePathColumn, null, null, null);
         cursor.moveToFirst();
@@ -62,14 +63,16 @@ public class Utils {
         BitmapFactory.decodeFile(picturePath, options);
         int maxWidthHeight = Math.max(options.outWidth, options.outHeight);
         int scale;
-        if (maxWidthHeight < 1000) {
+        if (maxWidthHeight < MAX_WIDTH_HEIGHT) {
             scale = 1;
         } else {
-            scale = SCALE;
+            scale = maxWidthHeight/MAX_WIDTH_HEIGHT;
         }
         // Calculate inSampleSize
+        mImageData.setWidth(options.outWidth);
+        mImageData.setHeight(options.outHeight);
         options.inSampleSize = calculateInSampleSize(options, options.outWidth / scale, options.outHeight / scale);
-
+        Log.i(TAG, options.outWidth+" "+options.outHeight+"getBitmapFromGallery: "+options.outWidth / scale+" "+options.outHeight / scale);
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(picturePath, options);

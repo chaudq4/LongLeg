@@ -9,4 +9,10 @@
     <string name="save_original">Save original</string>
     <string name="resize">Resize</string>
     <string name="exit">Exit</string>
+    <string name="saving_image">Saving image please don\'t turn off device</string>
+    <string name="jpg">JPG</string>
+    <string name="PNG">PNG</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="auto">Auto</string>
 </resources>

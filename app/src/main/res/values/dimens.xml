@@ -12,4 +12,5 @@
     <dimen name="devider_margin">3dp</dimen>
     <dimen name="devider_height">1dp</dimen>
     <dimen name="text_size_more_menu">16sp</dimen>
+    <dimen name="margin_width_height_resize">5dp</dimen>
 </resources>

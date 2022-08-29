@@ -1,5 +1,11 @@
 package com.chauduong.longleg;
 
+
+import static com.chauduong.longleg.DialogManager.DISMISS_RESIZE_DIALOG;
+import static com.chauduong.longleg.DialogManager.RESIZE_JPG;
+import static com.chauduong.longleg.DialogManager.RESIZE_PNG;
+import static com.chauduong.longleg.DialogManager.SAVE_SUCCESSFUL;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
@@ -7,22 +13,86 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Random;
 
-public class ImageData extends BaseObservable implements DialogManager.DialogListener {
+public class ImageData extends BaseObservable {
+    private static final int WIDTH_FACEBOOK = 2048;
     private Uri filePath;
     private Bitmap bmpFullOriginal;
     private Bitmap bmpOriginal;
     private Bitmap bmpPreview;
     private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private DialogManager mDialogManager;
+    private int width, height;
+    private ImageDataListener mListener;
+    private int widthRecommend, heightRecommend;
+    private Bitmap bitmapPreviewTempFullSize;
+
+    public void setBitmapPreviewTempFullSize(Bitmap bitmapPreviewTempFullSize) {
+        if (this.bitmapPreviewTempFullSize != null) this.bitmapPreviewTempFullSize.recycle();
+        this.bitmapPreviewTempFullSize = bitmapPreviewTempFullSize;
+        updateWidthHeightRecommend();
+    }
+
+    @Bindable
+    public int getWidthRecommend() {
+        return widthRecommend;
+    }
+
+    public void setWidthRecommend(int widthRecommend) {
+        this.widthRecommend = widthRecommend;
+        notifyPropertyChanged(BR.widthRecommend);
+    }
+
+    @Bindable
+    public int getHeightRecommend() {
+        return heightRecommend;
+    }
+
+    public void setHeightRecommend(int heightRecommend) {
+        this.heightRecommend = heightRecommend;
+        notifyPropertyChanged(BR.heightRecommend);
+    }
+
+    public void updateWidthHeightRecommend() {
+        if (bitmapPreviewTempFullSize != null) {
+            if (bitmapPreviewTempFullSize.getWidth() < bitmapPreviewTempFullSize.getHeight()) {
+                heightRecommend = WIDTH_FACEBOOK;
+                widthRecommend = (bitmapPreviewTempFullSize.getWidth() * heightRecommend) / bitmapPreviewTempFullSize.getHeight();
+            } else {
+                widthRecommend = WIDTH_FACEBOOK;
+                heightRecommend = (bitmapPreviewTempFullSize.getHeight() * widthRecommend) / bitmapPreviewTempFullSize.getWidth();
+            }
+            notifyPropertyChanged(BR.heightRecommend);
+            notifyPropertyChanged(BR.widthRecommend);
+        }
+    }
+
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 
     public Bitmap getBmpFullOriginal() {
         return bmpFullOriginal;
@@ -32,9 +102,9 @@ public class ImageData extends BaseObservable implements DialogManager.DialogLis
         this.bmpFullOriginal = bmpFullOriginal;
     }
 
-    public ImageData(Context mContext) {
+    public ImageData(Context mContext, ImageDataListener imageDataListener) {
         this.mContext = mContext;
-        mDialogManager = new DialogManager(mContext, this);
+        this.mListener = imageDataListener;
     }
 
     @Bindable
@@ -65,67 +135,27 @@ public class ImageData extends BaseObservable implements DialogManager.DialogLis
         this.filePath = filePath;
     }
 
-    public void save(Bitmap finalBitmap) {
+    public void save(Bitmap finalBitmap, int TYPE) {
+        SaveTask saveTask = new SaveTask(mContext, finalBitmap, TYPE, mListener);
+        saveTask.execute();
+    }
 
+    public void resizeBitmapAndSave(int TYPE, int newWidth, int newHeight) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String root = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).toString();
-                File myDir = new File(root + "/" + mContext.getString(R.string.app_name));
-                myDir.mkdirs();
-                Random generator = new Random();
-
-                int n = 10000;
-                n = generator.nextInt(n);
-                String fname = "GOM_" + n + ".jpg";
-                File file = new File(myDir, fname);
-                if (file.exists()) file.delete();
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.flush();
-                    out.close();
-                    mHandler.removeCallbacksAndMessages(null);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDialogManager.show(DialogManager.SAVE_SUCCESSFUL);
-                        }
-                    });
-
-
-                } catch (Exception e) {
-                    mHandler.removeCallbacksAndMessages(null);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-//                            mDialogManager.dissmissProgessDialog();
-//                            mDialogManager.showToast(DialogManager.SAVE_ERROR);
-                        }
-                    });
-
-                }
-                notifyGalleryNewImage(file);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(
+                        bitmapPreviewTempFullSize, newWidth, newHeight, false);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    save(resizedBitmap, TYPE);
+                });
             }
         }).start();
     }
 
-    public void notifyGalleryNewImage(File file) {
-        MediaScannerConnection.scanFile(mContext, new String[]{file.toString()}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                    }
-                });
-    }
 
-    @Override
-    public void onOKResetDialogClick() {
-
-    }
-
-    @Override
-    public void onCancelResetDialogClick() {
+    public interface ImageDataListener {
+        void onShowDialog(int TYPE);
 
     }
 }
